@@ -13,7 +13,7 @@ const Header = () => {
   const themeSwitcher = () => {
     if (!mounted) return null;
 
-    const currTheme = theme === "system" ? systemTheme : theme;
+    const currTheme = theme;
 
     if (currTheme === "dark") {
       return (
