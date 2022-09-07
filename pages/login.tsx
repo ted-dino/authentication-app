@@ -1,12 +1,27 @@
+import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import { FormEvent } from "react";
+import Link from "next/link";
+import { FormEvent, useEffect, useState } from "react";
+import { config } from "../utils/config";
 
 const Login = () => {
+  const [loading, setIsLoading] = useState(false);
   const { theme } = useTheme();
-  const loginUser = (e: FormEvent<HTMLFormElement>) => {
+  const credLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    formData.append("callbackUrl", "http://localhost:3000");
+    const inputObject = Object.fromEntries(formData);
+    await signIn("credentials", inputObject);
   };
+
+  const socialLogin = async (provider: string) => {
+    await signIn(provider, {
+      callbackUrl: config.baseUrl,
+    });
+  };
+
   return (
     <div className="p-12 w-full max-w-[475px] border border-borderClr rounded-3xl">
       <Image
@@ -21,7 +36,7 @@ const Login = () => {
       <h1 className="my-5 text-lg font-semibold text-lightPrimary dark:text-darkPrimary">
         Login
       </h1>
-      <form onSubmit={loginUser} className="flex flex-col gap-4">
+      <form onSubmit={credLogin} className="flex flex-col gap-4">
         <div className="relative">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +52,10 @@ const Login = () => {
             type="email"
             name="email"
             id="email"
+            required
             placeholder="Email"
+            pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
+            title="Must be a valid email address"
           />
         </div>
         <div className="relative">
@@ -52,12 +70,14 @@ const Login = () => {
               clipRule="evenodd"
             />
           </svg>
-
           <input
             className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
             type="password"
             name="password"
+            required
             id="password"
+            title="Must be at least 8 characters"
+            pattern="[a-zA-Z0-9]{8,}"
             placeholder="Password"
           />
         </div>
@@ -70,28 +90,21 @@ const Login = () => {
           or continue with these social profile
         </small>
         <div className="my-5 flex items-center justify-center gap-5">
-          <Image
-            src="/Gihub.svg"
-            width={42}
-            height={42}
-            className="cursor-pointer"
-          />
-          <Image
-            src="/Facebook.svg"
-            width={42}
-            height={42}
-            className="cursor-pointer"
-          />
-          <Image
-            src="/Google.svg"
-            width={42}
-            height={42}
-            className="cursor-pointer"
-          />
+          <button onClick={() => socialLogin("github")}>
+            <Image src="/Gihub.svg" width={42} height={42} />
+          </button>
+
+          <button onClick={() => socialLogin("google")}>
+            <Image src="/Google.svg" width={42} height={42} />
+          </button>
         </div>
         <small className="text-secondary dark:text-darkPrimary">
           Don’t have an account yet?{" "}
-          <span className="text-accent">Register</span>
+          <Link href="/register">
+            <a>
+              <span className="text-accent">Register</span>
+            </a>
+          </Link>
         </small>
       </div>
     </div>
