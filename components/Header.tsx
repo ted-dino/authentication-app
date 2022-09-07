@@ -1,18 +1,13 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { systemTheme, theme, setTheme } = useTheme();
-
-  useEffect(() => setMounted(true), []);
+  const { theme, setTheme } = useTheme();
 
   const themeSwitcher = () => {
-    if (!mounted) return null;
-
     const currTheme = theme;
 
     if (currTheme === "dark") {
