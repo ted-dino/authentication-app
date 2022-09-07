@@ -1,17 +1,37 @@
+import * as env from "env-var";
 import NextAuth from "next-auth";
-import FacebookProvider from "next-auth/providers/facebook";
+import CredentialsProvider from "next-auth/providers/credentials";
 import GithubProvider from "next-auth/providers/github";
-import { config } from "../../../utils/config";
+import GoogleProvider from "next-auth/providers/google";
 
 export default NextAuth({
   providers: [
     GithubProvider({
-      clientId: config.githubId,
-      clientSecret: config.githubSecret,
+      clientId: env.get("GITHUB_ID").required().asString(),
+      clientSecret: env.get("GITHUB_SECRET").required().asString(),
     }),
-    FacebookProvider({
-      clientId: config.facebookId,
-      clientSecret: config.facebookSecret,
+    GoogleProvider({
+      clientId: env.get("GOOGLE_CLIENT_ID").required().asString(),
+      clientSecret: env.get("GOOGLE_CLIENT_SECRET").required().asString(),
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {},
+      async authorize(credentials, req) {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+
+        if (email !== "john@gmail.com" || password !== "12345678") {
+          throw new Error("invalid credentials");
+        }
+        return {
+          id: "1234",
+          name: "John Doe",
+          email: "john@gmail.com",
+        };
+      },
     }),
   ],
 });
