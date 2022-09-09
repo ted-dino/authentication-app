@@ -1,19 +1,38 @@
 import type { NextPage } from "next";
+import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
-import Image from "next/image";
 
 const Home: NextPage = () => {
+  const { data: session } = useSession();
+
+  if (!session) return null;
+
   return (
-    <div>
+    <>
       <Head>
         <title>Auth</title>
-        <link rel="icon" href="/devchallenges.png" />
       </Head>
 
-      <main>
-        <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      </main>
-    </div>
+      <div>
+        <h1>
+          {session && session.user
+            ? `Signed in as ${session.user.email}`
+            : "Not signed in"}
+        </h1>
+        <img src={`${session.user?.image}`} alt="" />
+        {session && session.user && (
+          <button
+            onClick={() =>
+              signOut({
+                callbackUrl: "http://localhost:3000/",
+              })
+            }
+          >
+            Sign out
+          </button>
+        )}
+      </div>
+    </>
   );
 };
 
