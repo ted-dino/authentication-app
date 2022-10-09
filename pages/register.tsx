@@ -1,15 +1,44 @@
+import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { FormEvent, useState } from "react";
 
 const Register = () => {
   const { theme } = useTheme();
+  const [errors, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const saveUser = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    const response = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
+
+    if (!response?.ok) {
+      const message = response?.error as string;
+      setError(message);
+    } else {
+      setError("");
+      router.push("/");
+    }
+    setIsLoading(false);
+  };
+
   return (
     <>
       <Head>
         <title>Auth - Register</title>
       </Head>
+
       <div className="p-12 w-full max-w-[475px] border border-borderClr rounded-3xl">
         <Image
           src={
@@ -27,7 +56,27 @@ const Register = () => {
           Master web development by making real-life projects. There are
           multiple paths for you to choose.
         </p>
-        <form onSubmit={() => {}} className="flex flex-col gap-4">
+        {errors && (
+          <div className="flex gap-2 my-2 mx-auto p-5 border border-borderClr text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+
+            <span>{`${errors} Please try logging in instead. `}</span>
+          </div>
+        )}
+        <form onSubmit={saveUser} className="flex flex-col gap-4">
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +92,11 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
+              required
+              disabled={isLoading}
               placeholder="Email"
+              pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
+              title="Must be a valid email address"
             />
           </div>
           <div className="relative">
@@ -63,11 +116,20 @@ const Register = () => {
               className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
               type="password"
               name="password"
+              required
+              disabled={isLoading}
               id="password"
+              title="Must be at least 8 characters"
+              pattern="[a-zA-Z0-9]{8,}"
               placeholder="Password"
             />
           </div>
-          <button className="py-2 bg-accent text-white rounded-lg font-semibold">
+          <button
+            disabled={isLoading}
+            className={`py-2 bg-accent text-white rounded-lg font-semibold ${
+              isLoading && "cursor-progress"
+            }`}
+          >
             Start coding now
           </button>
         </form>
@@ -76,19 +138,13 @@ const Register = () => {
             or continue with these social profile
           </small>
           <div className="my-5 flex items-center justify-center gap-5">
-            <Image
-              src="/Gihub.svg"
-              width={42}
-              height={42}
-              className="cursor-pointer"
-            />
+            <button onClick={() => signIn("github")}>
+              <Image src="/Gihub.svg" width={42} height={42} />
+            </button>
 
-            <Image
-              src="/Google.svg"
-              width={42}
-              height={42}
-              className="cursor-pointer"
-            />
+            <button>
+              <Image src="/Google.svg" width={42} height={42} />
+            </button>
           </div>
           <small className="text-secondary dark:text-darkPrimary">
             Already a member?{" "}
