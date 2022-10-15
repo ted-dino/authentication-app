@@ -1,4 +1,5 @@
 ## Work In Progress
+
 <!-- <h1 align="center">{Your project name}</h1>
 
 <div align="center">
@@ -68,7 +69,7 @@ $ npm start
 
 ## Acknowledgements
 
-- [Steps to replicate a design with only HTML and CSS](https://devchallenges-blogs.web.app/how-to-replicate-design/)
+- [What is the correct way to use next-auth with Google OAuth and users stored in the database?](https://stackoverflow.com/questions/69011814/what-is-the-correct-way-to-use-next-auth-with-google-oauth-and-users-stored-in-t)
 - [Node.js](https://nodejs.org/)
 - [Marked - a markdown parser](https://github.com/chjj/marked)
 
