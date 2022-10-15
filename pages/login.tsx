@@ -1,26 +1,44 @@
+import { from } from "env-var";
 import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
-import { config } from "../utils/config";
+import { useRouter } from "next/router";
+import { FormEvent, useState } from "react";
 
 const Login = () => {
   const { theme } = useTheme();
+  const [error, setError] = useState("");
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const { get } = from({
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+  });
+  const baseUrl = get("NEXT_PUBLIC_BASE_URL").required().asUrlString();
 
   const credLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(e.currentTarget);
-    formData.append("callbackUrl", "http://localhost:3000");
+    formData.append("callbackUrl", baseUrl);
     const inputObject = Object.fromEntries(formData);
-    await signIn("credentials", inputObject);
-  };
+    const { email, password } = inputObject;
 
-  const socialLogin = async (provider: string) => {
-    await signIn(provider, {
-      callbackUrl: config.baseUrl,
+    const status = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
     });
+
+    if (status && !status.ok) {
+      const message = status.error as string;
+      setError(message);
+    } else {
+      router.push("/");
+      setError("");
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -41,6 +59,27 @@ const Login = () => {
         <h1 className="my-5 text-lg font-semibold text-lightPrimary dark:text-darkPrimary">
           Login
         </h1>
+        {error && (
+          <div className="flex gap-2 my-2 mx-auto p-5 border border-borderClr text-sm">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+
+            <span className="flex items-center gap-1">{error}</span>
+          </div>
+        )}
+
         <form onSubmit={credLogin} className="flex flex-col gap-4">
           <div className="relative">
             <svg
@@ -75,6 +114,7 @@ const Login = () => {
                 clipRule="evenodd"
               />
             </svg>
+
             <input
               className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
               type="password"
@@ -95,11 +135,11 @@ const Login = () => {
             or continue with these social profile
           </small>
           <div className="my-5 flex items-center justify-center gap-5">
-            <button onClick={() => socialLogin("github")}>
+            <button onClick={() => signIn("github")}>
               <Image src="/Gihub.svg" width={42} height={42} />
             </button>
 
-            <button onClick={() => socialLogin("google")}>
+            <button onClick={() => signIn("google")}>
               <Image src="/Google.svg" width={42} height={42} />
             </button>
           </div>

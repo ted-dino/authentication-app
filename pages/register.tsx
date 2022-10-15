@@ -1,3 +1,5 @@
+import { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth/next";
 import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Head from "next/head";
@@ -5,31 +7,43 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const Register = () => {
   const { theme } = useTheme();
-  const [errors, setError] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const saveUser = async (e: FormEvent<HTMLFormElement>) => {
+  const credRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     setIsLoading(true);
+    setError("");
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
-    const response = await signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+    const { email, password } = data;
 
-    if (!response?.ok) {
-      const message = response?.error as string;
-      setError(message);
+    const request = await fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    const response = await request.json();
+
+    if (response.message) {
+      setError(response.message);
     } else {
+      await signIn("credentials", {
+        email,
+        password,
+        callbackUrl: "/",
+      });
       setError("");
-      router.push("/");
     }
+
     setIsLoading(false);
   };
 
@@ -56,7 +70,8 @@ const Register = () => {
           Master web development by making real-life projects. There are
           multiple paths for you to choose.
         </p>
-        {errors && (
+
+        {error && (
           <div className="flex gap-2 my-2 mx-auto p-5 border border-borderClr text-sm">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -73,10 +88,25 @@ const Register = () => {
               />
             </svg>
 
-            <span>{`${errors} Please try logging in instead. `}</span>
+            <div className="flex items-center gap-1">
+              {error === "Email exists." ? (
+                <>
+                  {`${error}`}
+                  <div>
+                    Instead,{" "}
+                    <a href="/login" className="underline">
+                      log in.
+                    </a>
+                  </div>
+                </>
+              ) : (
+                error
+              )}
+            </div>
           </div>
         )}
-        <form onSubmit={saveUser} className="flex flex-col gap-4">
+
+        <form onSubmit={credRegister} className="flex flex-col gap-4">
           <div className="relative">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -142,7 +172,7 @@ const Register = () => {
               <Image src="/Gihub.svg" width={42} height={42} />
             </button>
 
-            <button>
+            <button onClick={() => signIn("google")}>
               <Image src="/Google.svg" width={42} height={42} />
             </button>
           </div>
@@ -158,6 +188,27 @@ const Register = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default Register;
