@@ -70,9 +70,7 @@ $ npm start
 ## Acknowledgements
 
 - [What is the correct way to use next-auth with Google OAuth and users stored in the database?](https://stackoverflow.com/questions/69011814/what-is-the-correct-way-to-use-next-auth-with-google-oauth-and-users-stored-in-t)
-- [Node.js](https://nodejs.org/)
-- [Marked - a markdown parser](https://github.com/chjj/marked)
-
+- [Show-Hide Multiple Password](https://stackoverflow.com/questions/71679442/show-hide-multiple-password-in-react-js)
 ## Contact
 
 - Website [your-website.com](https://{your-web-site-link})
