@@ -5,15 +5,14 @@ import { useTheme } from "next-themes";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import Password from "../components/Password";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const Register = () => {
   const { theme } = useTheme();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const credRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,15 +89,7 @@ const Register = () => {
 
             <div className="flex items-center gap-1">
               {error === "Email exists." ? (
-                <>
-                  {`${error}`}
-                  <div>
-                    Instead,{" "}
-                    <a href="/login" className="underline">
-                      log in.
-                    </a>
-                  </div>
-                </>
+                <>{`${error} Instead, log in.`}</>
               ) : (
                 error
               )}
@@ -142,17 +133,7 @@ const Register = () => {
               />
             </svg>
 
-            <input
-              className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
-              type="password"
-              name="password"
-              required
-              disabled={isLoading}
-              id="password"
-              title="Must be at least 8 characters"
-              pattern="[a-zA-Z0-9]{8,}"
-              placeholder="Password"
-            />
+            <Password isDisabled={isLoading} />
           </div>
           <button
             disabled={isLoading}
