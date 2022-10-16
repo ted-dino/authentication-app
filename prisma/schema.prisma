@@ -12,13 +12,12 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  name     String
-  email    String? @unique
-  password String?
-  image    String?
-  bio      String?
-  provider String
+  name      String
+  email     String   @unique
+  image     String
+  bio       String   @default("")
+  phone     Int      @default(42069)
+  password  String?
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
 }
