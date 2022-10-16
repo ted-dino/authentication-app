@@ -1,4 +1,3 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { User } from "@prisma/client";
 import * as argon2 from "argon2";
 import * as env from "env-var";
@@ -10,7 +9,6 @@ import GoogleProvider from "next-auth/providers/google";
 import prisma from "../../../lib/prismadb";
 
 export const authOptions: NextAuthOptions = {
-  // adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
       clientId: env.get("GITHUB_ID").required().asString(),
@@ -41,7 +39,7 @@ export const authOptions: NextAuthOptions = {
           (await argon2.verify(userAccount.password, password));
 
         if (!userAccount) {
-          throw new Error("No user Found with Email Please Sign Up!");
+          throw new Error("No user found with email, please sign up. ");
         } else {
           if (!validPassword || userAccount.email !== email) {
             throw new Error("Invalid Username or Password ");
