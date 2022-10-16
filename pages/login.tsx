@@ -1,4 +1,3 @@
-import { from } from "env-var";
 import { signIn } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Head from "next/head";
@@ -6,22 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import Password from "../components/Password";
 
 const Login = () => {
   const { theme } = useTheme();
   const [error, setError] = useState("");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { get } = from({
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-  });
-  const baseUrl = get("NEXT_PUBLIC_BASE_URL").required().asUrlString();
 
   const credLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     const formData = new FormData(e.currentTarget);
-    formData.append("callbackUrl", baseUrl);
     const inputObject = Object.fromEntries(formData);
     const { email, password } = inputObject;
 
@@ -97,6 +92,7 @@ const Login = () => {
               name="email"
               id="email"
               required
+              disabled={isLoading}
               placeholder="Email"
               pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
               title="Must be a valid email address"
@@ -115,18 +111,14 @@ const Login = () => {
               />
             </svg>
 
-            <input
-              className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
-              type="password"
-              name="password"
-              required
-              id="password"
-              title="Must be at least 8 characters"
-              pattern="[a-zA-Z0-9]{8,}"
-              placeholder="Password"
-            />
+            <Password isDisabled={isLoading} />
           </div>
-          <button className="py-2 bg-accent text-white rounded-lg font-semibold">
+          <button
+            disabled={isLoading}
+            className={`py-2 bg-accent text-white rounded-lg font-semibold ${
+              isLoading && "cursor-progress"
+            }`}
+          >
             Login
           </button>
         </form>
