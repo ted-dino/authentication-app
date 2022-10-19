@@ -13,6 +13,7 @@ declare module "next-auth" {
     user: {
       bio?: string | null;
       password?: string | null;
+      phone: number;
     } & DefaultSession["user"];
   }
   interface User {
