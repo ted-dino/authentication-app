@@ -3,7 +3,9 @@ import { useState } from "react";
 const Password = ({
   isDisabled,
   className,
+  isRequired,
 }: {
+  isRequired: boolean;
   isDisabled: boolean;
   className: string;
 }) => {
@@ -18,7 +20,7 @@ const Password = ({
         className={className}
         type={show ? "text" : "password"}
         name="password"
-        required
+        required={isRequired}
         disabled={isDisabled}
         id="password"
         title="Must be at least 8 characters"

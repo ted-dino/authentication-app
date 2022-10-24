@@ -135,6 +135,7 @@ const Register = () => {
 
             <Password
               isDisabled={isLoading}
+              isRequired={true}
               className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
             />
           </div>
