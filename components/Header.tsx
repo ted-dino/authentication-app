@@ -90,7 +90,7 @@ const Header = () => {
                   <ul
                     className={`${
                       showDropdown ? "block" : "hidden"
-                    } grid grid-cols-1 gap-2 absolute right-0 top-[40px] z-10 h-[174px] w-[188px] rounded-2xl pt-4 pl-5 pr-3 pb-3 border border-borderClr`}
+                    } bg-darkPrimary dark:bg-lightPrimary grid grid-cols-1 gap-2 absolute right-0 top-[40px] z-10 h-[174px] w-[188px] rounded-2xl pt-4 pl-5 pr-3 pb-3 border border-borderClr`}
                   >
                     <li className="p-2 flex items-center gap-2 hover:bg-[#f2f2f2] dark:hover:bg-[#c83929] rounded-md">
                       <svg
