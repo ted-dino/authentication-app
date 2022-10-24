@@ -1,6 +1,12 @@
 import { useState } from "react";
 
-const Password = ({ isDisabled }: { isDisabled: boolean }) => {
+const Password = ({
+  isDisabled,
+  className,
+}: {
+  isDisabled: boolean;
+  className: string;
+}) => {
   const [show, setShow] = useState(false);
 
   const togglePassword = () => {
@@ -9,7 +15,7 @@ const Password = ({ isDisabled }: { isDisabled: boolean }) => {
   return (
     <>
       <input
-        className="py-2 px-8 border border-borderClr w-full rounded-lg focus:outline-none"
+        className={className}
         type={show ? "text" : "password"}
         name="password"
         required
