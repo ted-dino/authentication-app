@@ -71,6 +71,7 @@ $ npm start
 
 - [What is the correct way to use next-auth with Google OAuth and users stored in the database?](https://stackoverflow.com/questions/69011814/what-is-the-correct-way-to-use-next-auth-with-google-oauth-and-users-stored-in-t)
 - [Show-Hide Multiple Password](https://stackoverflow.com/questions/71679442/show-hide-multiple-password-in-react-js)
+- [Remove Arrow on Input type Number with Tailwind CSS](https://stackoverflow.com/questions/71296535/how-to-remove-arrow-on-input-type-number-with-tailwind-css)
 ## Contact
 
 - Website [your-website.com](https://{your-web-site-link})
