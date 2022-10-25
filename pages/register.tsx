@@ -23,7 +23,7 @@ const Register = () => {
     const data = Object.fromEntries(formData);
     const { email, password } = data;
 
-    const request = await fetch("/api/register", {
+    const request = await fetch("/api/users/register", {
       method: "POST",
       body: JSON.stringify({ email, password }),
       headers: {

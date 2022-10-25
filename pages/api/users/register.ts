@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import * as argon2 from "argon2";
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../lib/prismadb";
+import prisma from "../../../lib/prismadb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { email, password } = req.body;
