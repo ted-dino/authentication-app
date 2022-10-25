@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const Home = () => {
@@ -10,7 +11,7 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Auth</title>
+        <title>Auth - Home</title>
       </Head>
 
       <section className="w-11/12 self-start md:self-center">
@@ -26,9 +27,11 @@ const Home = () => {
                 Some info may be visible to other people
               </span>
             </div>
-            <button className="w-24 py-2 border border-borderClr rounded-xl">
-              Edit
-            </button>
+            <Link href="/edit">
+              <a className="w-24 py-2 border border-borderClr rounded-xl flex justify-center">
+                Edit
+              </a>
+            </Link>
           </div>
           {session && session.user ? (
             <>
