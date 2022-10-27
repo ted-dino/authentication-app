@@ -94,8 +94,9 @@ export const authOptions: NextAuthOptions = {
           password: true,
         },
       });
-      if (newData) session.user = newData;
-      session.user = newData ? newData : session.user;
+
+      session.user = newData!;
+
       return session;
     },
   },
