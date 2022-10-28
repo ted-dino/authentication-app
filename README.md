@@ -45,6 +45,7 @@
 - [Nextjs](https://nextjs.org/)
 - [NextAuth.js](https://next-auth.js.org/)
 - [Tailwind](https://tailwindcss.com/)
+- [Next-Themes](https://www.npmjs.com/package/next-themes)
 - [Prisma.io](https://www.prisma.io/)
 - [Planetscale](https://planetscale.com/)
 
