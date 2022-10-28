@@ -4,29 +4,26 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prismadb";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { bio, name, phone, email, password } = req.body;
-  const newPhone = Number(phone);
-
-  let hashedPassword = "";
-  if (password) {
-    const encryptedPassword = await argon2.hash(password);
-    hashedPassword = encryptedPassword;
-  }
+  let body = req.body;
+  let formattedPhone: Number;
+  let hashedNewPass: String;
 
   try {
+    if (body.phone) {
+      formattedPhone = Number(body.phone);
+      body = { ...body, phone: formattedPhone };
+    }
+    if (body.password) {
+      hashedNewPass = await argon2.hash(body.password);
+      body = { ...body, password: hashedNewPass };
+    }
+
     const updatedUser = await prisma.user.update({
-      data: {
-        bio,
-        name,
-        phone: newPhone,
-        password: hashedPassword,
-        email,
-      },
+      data: body,
       where: {
-        email: email,
+        email: body.email,
       },
     });
-
     res.status(200).json(updatedUser);
   } catch (error) {
     if (error instanceof Error) {
