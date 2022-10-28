@@ -48,6 +48,7 @@
 - [Next-Themes](https://www.npmjs.com/package/next-themes)
 - [Prisma.io](https://www.prisma.io/)
 - [Planetscale](https://planetscale.com/)
+- [env-var](https://github.com/evanshortiss/env-var)
 
 ## Features
 
