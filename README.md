@@ -49,6 +49,7 @@
 - [Prisma.io](https://www.prisma.io/)
 - [Planetscale](https://planetscale.com/)
 - [env-var](https://github.com/evanshortiss/env-var)
+- [argon2](https://github.com/ranisalt/node-argon2#readme)
 
 ## Features
 
