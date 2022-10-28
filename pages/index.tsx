@@ -15,26 +15,27 @@ const Home = () => {
       </Head>
 
       <section className="w-11/12 self-start md:self-center">
-        <div className="text-center mb-7">
-          <h1 className="text-2xl md:text-4xl">Personal info</h1>
-          <span>Basic info, like your name and photo</span>
-        </div>
-        <div className="mx-auto max-w-[845px] md:border md:dark:border-darkPrimary rounded-2xl">
-          <div className="mt-5 md:mt-0 md:px-12 md:py-9 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl md:text-2xl">Profile</h2>
-              <span className="block w-44 sm:w-full text-xs md:text-lg">
-                Some info may be visible to other people
-              </span>
+        {session && session.user ? (
+          <>
+            <div className="text-center mb-7">
+              <h1 className="text-2xl md:text-4xl">Personal info</h1>
+              <span>Basic info, like your name and photo</span>
             </div>
-            <Link href="/edit">
-              <a className="w-24 py-2 border border-borderClr rounded-xl flex justify-center">
-                Edit
-              </a>
-            </Link>
-          </div>
-          {session && session.user ? (
-            <>
+            <div className="mx-auto max-w-[845px] md:border md:dark:border-darkPrimary rounded-2xl">
+              <div className="mt-5 md:mt-0 md:px-12 md:py-9 flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl md:text-2xl">Profile</h2>
+                  <span className="block w-44 sm:w-full text-xs md:text-lg">
+                    Some info may be visible to other people
+                  </span>
+                </div>
+                <Link href="/edit">
+                  <a className="w-24 py-2 border border-borderClr rounded-xl flex justify-center">
+                    Edit
+                  </a>
+                </Link>
+              </div>
+
               <div className="mt-5 md:mt-0 md:px-12 md:py-5 grid grid-cols-2 md:border-t-[1px]">
                 <span className="uppercase md:text-lg flex items-center">
                   Photo
@@ -73,11 +74,22 @@ const Home = () => {
                     : ""}
                 </span>
               </div>
-            </>
-          ) : (
-            <h2>No User Found!</h2>
-          )}
-        </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1>No User Found!</h1>
+            <button
+              onClick={() =>
+                signOut({
+                  callbackUrl: "/login",
+                })
+              }
+            >
+              Go back
+            </button>
+          </>
+        )}
       </section>
     </>
   );
