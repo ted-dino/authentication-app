@@ -4,60 +4,64 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
+import Password from "../components/Password";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const Edit = () => {
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    bio: session && session.user ? session.user.bio?.toString() : "",
-    name: session && session.user ? session.user.name?.toString() : "",
-    phone: session && session.user ? session.user.phone : "",
-    email: session && session.user ? session.user.email?.toString() : "",
-    password: "",
-  });
 
   const submitData = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const request = await fetch("/api/users/update", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
+    const formData = new FormData(e.currentTarget);
+    const inputData = Object.fromEntries(formData);
+    let formattedData: any = {};
 
-      const status = await request.json();
+    for (const [key, value] of Object.entries(inputData)) {
+      if (value !== "") {
+        formattedData[`${key}`] = value;
+      }
+    }
 
-      if (status && status.message) {
-        const message = status.error as string;
-        alert(message);
-      } else {
-        router.reload();
+    if (Object.keys(formattedData).length > 0) {
+      try {
+        setIsLoading(true);
+        const request = await fetch("/api/users/update", {
+          method: "PATCH",
+          body: JSON.stringify({
+            ...formattedData,
+            email: session?.user.email,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+
+        const status = await request.json();
+
+        if (status && status.message) {
+          const message = status.error as string;
+          alert(message);
+        } else {
+          alert(`Profile has been successfully updated!`);
+          router.reload();
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(`Update Error: ${error.message}`);
+          return;
+        }
+        alert(`Unexpected Error: ${error}`);
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(`Update Error: ${error.message}`);
-        return;
-      }
-      alert(`Unexpected Error: ${error}`);
+      setIsLoading(false);
+    } else {
+      alert("Fields are empty!");
     }
   };
 
-  const onChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const value = e.currentTarget.value;
-    const name = e.currentTarget.name;
-
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
   return (
     <>
       <Head>
@@ -107,11 +111,10 @@ const Edit = () => {
                   Name
                 </label>
                 <input
+                  disabled={isLoading}
                   type="text"
                   name="name"
                   id="name"
-                  value={formData.name}
-                  onChange={onChange}
                   className="p-2 border border-borderClr w-full max-w-[420px] rounded-lg focus:outline-none"
                 />
               </div>
@@ -122,11 +125,10 @@ const Edit = () => {
                 <textarea
                   name="bio"
                   id="bio"
+                  disabled={isLoading}
                   cols={10}
                   rows={6}
-                  value={formData.bio}
                   className="p-2 border border-borderClr w-full max-w-[420px] min-h-[90px]  max-h-[120px] rounded-lg focus:outline-none"
-                  onChange={onChange}
                 />
               </div>
               <div className="my-2 md:my-7 flex flex-col">
@@ -134,11 +136,10 @@ const Edit = () => {
                   Phone
                 </label>
                 <input
+                  disabled={isLoading}
                   type="number"
                   name="phone"
                   id="phone"
-                  onChange={onChange}
-                  value={formData.phone}
                   className="p-2 border border-borderClr w-full max-w-[420px] rounded-lg focus:outline-none"
                 />
               </div>
@@ -147,12 +148,11 @@ const Edit = () => {
                   Email
                 </label>
                 <input
+                  disabled={isLoading}
                   className="p-2 border border-borderClr w-full max-w-[420px] rounded-lg focus:outline-none"
                   type="email"
                   name="email"
                   id="email"
-                  onChange={onChange}
-                  value={formData.email}
                   pattern="[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+"
                   title="Must be a valid email address"
                 />
@@ -162,21 +162,15 @@ const Edit = () => {
                   New Password
                 </label>
                 <div className="relative">
-                  <input
-                    className="p-2 border border-borderClr w-full rounded-lg focus:outline-none"
-                    type="password"
-                    name="password"
-                    id="password"
-                    onChange={onChange}
-                    value={formData.password}
-                    title="Must be at least 8 characters"
-                    pattern="[a-zA-Z0-9]{8,}"
-                    placeholder="Password"
+                  <Password
+                    isDisabled={isLoading}
+                    isRequired={false}
+                    className="p-2 border border-borderClr w-full max-w-[420px] rounded-lg focus:outline-none"
                   />
                 </div>
               </div>
               <button className="py-2 px-6 bg-[#f26352] text-white dark:bg-accent rounded-lg">
-                Save
+                {isLoading ? "Saving..." : "Save"}
               </button>
             </form>
           </div>
