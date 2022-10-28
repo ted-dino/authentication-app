@@ -36,7 +36,7 @@
    - This project was difficult for me because it was my first time doing something like this, but it turned out to be a great learning experience for dealing with auth projects in the future. 
 - What have you learned/improved?
    - By doing so, I learned more about authentication, including how to set it up and connect to a database. 
-   - It also improved my debugging and documentation skills. 
+   - It also improved my debugging and documentation reading skills. 
 - Your wisdom? :)
    - If you feel lost, go to the documentaion.
 
